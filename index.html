@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>익명게시판</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="header-inner">
+        <button class="brand" type="button" data-route="home">익명게시판</button>
+        <nav class="nav-actions" aria-label="주요 메뉴">
+          <span id="sessionStatus" class="session-status">로그아웃</span>
+          <button id="writeNavButton" class="primary-button" type="button">글 작성</button>
+          <button id="myPageNavButton" class="ghost-button hidden" type="button" data-route="mypage">마이페이지</button>
+          <button id="loginNavButton" class="ghost-button" type="button" data-route="login">로그인</button>
+          <button id="logoutButton" class="ghost-button hidden" type="button">로그아웃</button>
+        </nav>
+      </div>
+    </header>
+
+    
+
+    <main class="app-shell">
+      <section id="notice" class="notice hidden" role="status" aria-live="polite"></section>
+
+      <section id="homeView" class="view">
+        <div class="view-heading">
+          <div>
+            <p class="eyebrow">게시판</p
+              
+              
+              
+              >
+            <h1>모든 게시글</h1>
+          </div>
+          <div class="search-wrap">
+            <label for="searchInput">게시글 검색</label>
+            <input id="searchInput" type="search" placeholder="제목 또는 내용" />
+          </div>
+        </div>
+        <div class="board-tabs" role="tablist" aria-label="게시판 선택">
+          <button class="board-tab active" type="button" data-board="all">전체게시판</button>
+          <button class="board-tab" type="button" data-board="free">자유게시판</button>
+          <button class="board-tab" type="button" data-board="notice">공지게시판</button>
+        </div>
+        <p id="boardDescription" class="board-description">전체게시판입니다.</p>
+        <div id="postList" class="post-list" aria-live="polite"></div>
+        <div id="pagination" class="pagination" aria-label="게시글 페이지"></div>
+      </section>
+
+      <section id="loginView" class="view hidden">
+        <div class="form-panel">
+          <div class="panel-heading">
+            <p class="eyebrow">로그인</p>
+            <h1>계정으로 로그인</h1>
+          </div>
+          <form id="loginForm" class="stacked-form">
+            <label>
+              ID
+              <input id="loginId" autocomplete="username" required style="ime-mode: disabled" />
+            </label>
+            <label>
+             PASSWORD
+            <span class="inline-check">
+             <input id="loginPassword" type="password" autocomplete="current-password" required />
+            <button class="ghost-button" type="button" id="toggleLoginPassword">👁</button>
+           </span>
+          </label>
+            <button class="primary-button full-button" type="submit">로그인</button>
+          </form>
+          <p class="form-helper">
+            계정이 없다면
+            <button class="text-button" type="button" data-route="signup">회원가입</button>
+          </p>
+        </div>
+      </section>
+
+      <section id="signupView" class="view hidden">
+        <div class="form-panel">
+          <div class="panel-heading">
+            <p class="eyebrow">회원가입</p>
+            <h1>새 계정 생성</h1>
+          </div>
+          <form id="signupForm" class="stacked-form">
+            <label>
+              ID
+              <span class="inline-check">
+                <input id="signupId" autocomplete="username" required style="ime-mode: disabled" />
+                <button id="checkDuplicateButton" class="ghost-button" type="button">중복 확인</button>
+              </span>
+            </label>
+            <p id="duplicateResult" class="input-message">ID 중복 확인이 필요합니다.</p>
+            <label>
+              PASSWORD
+                <span class="inline-check">
+                <input id="signupPassword" type="password" autocomplete="new-password" minlength="4" required />
+                <button class="ghost-button" type="button" id="toggleSignupPassword">👁</button>
+              </span>
+          </label>
+            <button class="primary-button full-button" type="submit">회원가입</button>
+          </form>
+          <p class="form-helper">
+            이미 계정이 있다면
+            <button class="text-button" type="button" data-route="login">로그인</button>
+          </p>
+        </div>
+      </section>
+
+      <section id="writeView" class="view hidden">
+        <div class="form-panel wide">
+          <div class="panel-heading">
+            <p class="eyebrow" id="editorModeLabel">글 작성</p>
+            <h1 id="editorTitle">게시글 작성</h1>
+          </div>
+          <form id="postForm" class="stacked-form">
+            <label id="postBoardLabel" class="hidden">
+              게시판
+              <select id="postBoardSelect">
+                <option value="free">자유게시판</option>
+                <option value="notice">공지게시판</option>
+              </select>
+            </label>
+            <label>
+              제목
+              <input id="postTitleInput" maxlength="80" required />
+            </label>
+            <label>
+              내용
+              <textarea id="postBodyInput" rows="10" required></textarea>
+            </label>
+            <label>
+              이미지 또는 동영상
+              <input id="postImageInput" type="file" accept="image/*,video/*" multiple />
+            </label>
+            <div class="image-tools">
+              <div id="imagePreview" class="image-preview" aria-live="polite"></div>
+              <button id="clearImagesButton" class="ghost-button" type="button">미디어 비우기</button>
+            </div>
+            <div class="button-row">
+              <button class="primary-button" type="submit">저장</button>
+              <button class="ghost-button" type="button" data-route="home">취소</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <section id="mypageView" class="view hidden">
+        <div class="profile-panel">
+          <div class="view-heading compact">
+            <div>
+              <p class="eyebrow">마이페이지</p>
+              <h1 id="profileTitle">활동 내역</h1>
+            </div>
+            <button id="settingsNavButton" class="ghost-button hidden" type="button" data-route="settings">⚙️</button>
+          </div>
+          <div class="profile-tabs" role="tablist" aria-label="활동 내역">
+            <button class="profile-tab active" type="button" data-profile-tab="posts">작성한 글</button>
+            <button class="profile-tab" type="button" data-profile-tab="likes">좋아요 누른 글</button>
+            <button class="profile-tab" type="button" data-profile-tab="comments">댓글 단 글</button>
+            <button id="adminUsersTab" class="profile-tab hidden" type="button" data-profile-tab="adminUsers">회원 관리</button>
+          </div>
+          <div id="profileContent" class="profile-content"></div>
+        </div>
+      </section>
+
+      <section id="detailView" class="view hidden">
+        <article class="detail-panel">
+          <button class="text-button back-button" type="button" data-route="home">목록으로</button>
+          <div id="postDetail"></div>
+          <section class="comments-section">
+            <h2>댓글</h2>
+            <form id="commentForm" class="comment-form">
+              <input id="commentInput" placeholder="댓글을 입력하세요" required />
+              <button class="primary-button" type="submit">등록</button>
+            </form>
+            <div id="commentList" class="comment-list"></div>
+          </section>
+        </article>
+      </section>
+      <section id="settingsView" class="view hidden">
+  <div class="form-panel">
+    <div class="panel-heading">
+      <button class="text-button back-button" type="button" data-route="mypage">← 마이페이지</button>
+      <p class="eyebrow" style="margin-top: 12px;">설정</p>
+      <h1>비밀번호 변경</h1>
+    </div>
+    <form id="changePasswordForm" class="stacked-form">
+      <label>
+        현재 비밀번호
+        <span class="inline-check">
+          <input id="currentPassword" type="password" required />
+          <button class="ghost-button" type="button" id="toggleCurrentPassword">👁</button>
+        </span>
+      </label>
+      <label>
+        새 비밀번호
+        <span class="inline-check">
+          <input id="newPassword" type="password" minlength="4" required />
+          <button class="ghost-button" type="button" id="toggleNewPassword">👁</button>
+        </span>
+      </label>
+      <button class="primary-button full-button" type="submit">변경하기</button>
+    </form>
+  </div>
+</section>
+    </main>
+
+    <div id="mediaViewer" class="media-viewer hidden" role="dialog" aria-modal="true" aria-label="원본 미디어 보기">
+      <div class="media-viewer-inner">
+        <button id="closeMediaViewerButton" class="ghost-button media-close-button" type="button">닫기</button>
+        <div id="mediaViewerContent" class="media-viewer-content"></div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
